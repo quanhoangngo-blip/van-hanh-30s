@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Báo cáo CEO — Phụ phí thợ cao cấp & book thợ quen</title>
+<style>
+  :root {
+    --primary: #1f4e79;
+    --accent: #c5504b;
+    --gold: #d4a017;
+    --green: #2e8b57;
+    --bg-soft: #f7f9fc;
+    --border: #d8dee8;
+    --text: #1a1a1a;
+    --text-muted: #555;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0; padding: 0;
+    color: var(--text);
+    background: #fff;
+    line-height: 1.6;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 24px 32px; }
+
+  header.hero {
+    background: linear-gradient(135deg, var(--primary), #2c6ea4);
+    color: #fff;
+    padding: 36px 32px;
+    margin-bottom: 28px;
+    border-radius: 8px;
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 26px; line-height: 1.3; }
+  header.hero .meta { font-size: 13px; opacity: 0.92; }
+  header.hero .meta span { display: inline-block; margin-right: 18px; }
+
+  h2 {
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+    padding-bottom: 6px;
+    margin-top: 36px;
+    font-size: 22px;
+  }
+  h3 {
+    color: var(--primary);
+    margin-top: 24px;
+    font-size: 17px;
+  }
+  h4 { margin-top: 18px; margin-bottom: 6px; color: #333; font-size: 15px; }
+
+  .tldr {
+    background: #fff8e1;
+    border-left: 5px solid var(--gold);
+    padding: 16px 20px;
+    margin: 0 0 24px;
+    border-radius: 4px;
+    font-size: 15px;
+  }
+  .tldr strong { color: var(--accent); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    font-size: 13.5px;
+    background: #fff;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg-soft);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  tr:nth-child(even) td { background: #fafbfd; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.center { text-align: center; }
+
+  .star { color: var(--gold); font-weight: 700; }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--accent); font-weight: 600; }
+  .bad { background: #fcefef !important; }
+  .good { background: #effaf3 !important; }
+  .highlight { background: #fff3cd !important; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 14px 0 24px;
+  }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    background: #fff;
+  }
+  .card.warn { border-left: 4px solid var(--accent); }
+  .card.ok { border-left: 4px solid var(--green); }
+  .card.note { border-left: 4px solid var(--primary); }
+  .card h4 { margin-top: 0; }
+  .card p { margin: 4px 0; font-size: 13.5px; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+  .badge.primary { background: var(--primary); }
+  .badge.warn    { background: var(--accent); }
+  .badge.gold    { background: var(--gold); }
+  .badge.green   { background: var(--green); }
+  .badge.grey    { background: #888; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin: 12px 0 18px;
+  }
+  .kpi {
+    background: var(--bg-soft);
+    border-radius: 6px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .kpi .label { font-size: 12px; color: var(--text-muted); }
+  .kpi .val { font-size: 20px; font-weight: 700; color: var(--primary); margin-top: 4px; }
+  .kpi .sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .roadmap {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 14px 0;
+  }
+  .roadmap li {
+    counter-increment: step;
+    background: var(--bg-soft);
+    margin-bottom: 10px;
+    padding: 12px 16px 12px 56px;
+    position: relative;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary);
+  }
+  .roadmap li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px; top: 12px;
+    width: 30px; height: 30px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    text-align: center;
+    line-height: 30px;
+  }
+
+  ul.pros-cons { margin: 6px 0 12px; padding-left: 20px; }
+  ul.pros-cons li { margin-bottom: 4px; font-size: 13.5px; }
+
+  .footer-note {
+    margin-top: 36px;
+    padding: 14px;
+    background: var(--bg-soft);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  @media print {
+    header.hero { background: var(--primary) !important; -webkit-print-color-adjust: exact; }
+    .container { max-width: 100%; padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+  <h1>Báo cáo đề xuất CEO — Phụ phí thợ cao cấp & book thợ quen</h1>
+  <div class="meta">
+    <span><strong>Kỳ dữ liệu:</strong> 16/02 – 16/05/2026 (3 tháng)</span>
+    <span><strong>Ngày lập:</strong> 16/05/2026</span>
+    <span><strong>Nguồn:</strong> SQL Server 30Shine (data thật)</span>
+  </div>
+</header>
+
+<!-- ============ TÓM TẮT ============ -->
+<div class="tldr">
+  <strong>Tóm gọn 1 dòng:</strong> Idea 2A (phí 30k book + thưởng 15k, KHÔNG ngưỡng) — upside <strong>~5 tỷ/năm</strong>, gần như không thể lỗ P&amp;L, sẵn sàng A/B test 6 salon. Idea 1B (8% × Lv3+4) bổ sung sau khi 2A ổn — upside <strong>+0,9 tỷ/năm</strong> độc lập với 2A.
+</div>
+
+<h2>📌 Tóm tắt điều hành</h2>
+
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="label">Khách book stylist/tháng</div>
+    <div class="val">18.035</div>
+    <div class="sub">579 stylist, Mar+Apr 2026</div>
+  </div>
+  <div class="kpi">
+    <div class="label">AOV nhóm book</div>
+    <div class="val">273k</div>
+    <div class="sub">+13% vs nhóm walk-in (241k)</div>
+  </div>
+  <div class="kpi">
+    <div class="label">% UND nhóm book</div>
+    <div class="val">10,95%</div>
+    <div class="sub">Gấp 1,8 lần nhóm walk-in (6,14%)</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Thợ cao cấp Lv3+4</div>
+    <div class="val">74 NV</div>
+    <div class="sub">11% lực lượng, DT cắt+UND 1,96 tỷ/th</div>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Phương án</th>
+      <th>Cơ chế</th>
+      <th class="center">LN ròng (c=10%)</th>
+      <th>Rủi ro</th>
+      <th>Đánh giá</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1A</strong> — Phí 5% × Lv3+4</td>
+      <td>Thợ top (74 NV) tự động +5% giá cắt+UND. Chia 50/50 với thợ.</td>
+      <td class="num">+49 tr/th<br><span class="sub">~588 tr/năm</span></td>
+      <td><span class="badge green">Thấp</span></td>
+      <td>OK, quy mô nhỏ</td>
+    </tr>
+    <tr class="good">
+      <td><strong>1B</strong> — Phí 8% × Lv3+4</td>
+      <td>Như 1A nhưng 8%</td>
+      <td class="num"><strong>+78 tr/th</strong><br><span class="sub">~940 tr/năm</span></td>
+      <td><span class="badge gold">TB</span></td>
+      <td><strong>OK, khuyến nghị bổ sung sau 2A</strong></td>
+    </tr>
+    <tr class="bad">
+      <td><strong>1C</strong> — Phí 5% × Lv2+3+4</td>
+      <td>Mở rộng cho 257 NV (38%)</td>
+      <td class="num">+155 tr/th<br><span class="sub">~1,86 tỷ/năm</span></td>
+      <td><span class="badge warn">Cao</span></td>
+      <td>KHÔNG (cannibalize Lv1)</td>
+    </tr>
+    <tr class="bad">
+      <td><strong>1D</strong> — Phí 8% × Lv2+3+4</td>
+      <td>Mở rộng 8%</td>
+      <td class="num">+249 tr/th<br><span class="sub">~2,99 tỷ/năm</span></td>
+      <td><span class="badge warn">Rất cao</span></td>
+      <td>KHÔNG (phản ứng giá lớn)</td>
+    </tr>
+    <tr class="highlight">
+      <td><strong class="star">★ 2A</strong> — Phí 30k book + thưởng 15k, KHÔNG ngưỡng</td>
+      <td>Khách book thợ trả thêm 30k; thợ được thưởng 15k thay vì 10k</td>
+      <td class="num"><strong class="pos">+424 tr/th</strong><br><span class="sub">~5,09 tỷ/năm</span></td>
+      <td><span class="badge green">Rất thấp P&amp;L</span></td>
+      <td><strong class="star">⭐ ƯU TIÊN 1</strong></td>
+    </tr>
+    <tr class="bad">
+      <td><strong>2B</strong> — 2A + ngưỡng X=10</td>
+      <td>Cắt thưởng NV book &lt;10 lượt/tháng</td>
+      <td class="num">~+434 tr/th<br><span class="sub">biên chỉ +120 tr/năm</span></td>
+      <td><span class="badge warn">Cao</span></td>
+      <td>KHÔNG (62% stylist mất thưởng)</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============ BỐI CẢNH DỮ LIỆU ============ -->
+<h2>🔍 Bối cảnh dữ liệu & phán quyết giả định</h2>
+
+<div class="grid">
+  <div class="card warn">
+    <h4><span class="badge warn">BÁC BỎ một phần</span></h4>
+    <p><strong>Giả định:</strong> "Khách book thợ chỉ cắt cơ bản, không UND/Relax"</p>
+    <p><strong>Data nói:</strong> nhóm book mua UND <strong>10,95%</strong> gấp <strong>1,8 lần</strong> nhóm thường (6,14%). Đúng phần Relax: nhóm book ít relax/combo hơn (42,83% vs 54,52%).</p>
+  </div>
+  <div class="card warn">
+    <h4><span class="badge warn">Không bằng chứng</span></h4>
+    <p><strong>Giả định:</strong> "Khách book ít nhạy giá, sẵn sàng trả thêm"</p>
+    <p><strong>Data nói:</strong> Không có lịch sử thử nghiệm phí. <strong>Bắt buộc A/B test</strong> trước nhân rộng.</p>
+  </div>
+  <div class="card note">
+    <h4><span class="badge gold">Đúng định lượng, sai kết luận</span></h4>
+    <p><strong>Giả định:</strong> "Nhiều NV ít lượt book → cơ chế lãng phí"</p>
+    <p><strong>Data nói:</strong> 62% stylist &lt;10 lượt/tháng — nhưng cắt thưởng chỉ tiết kiệm ~4%, phần lớn là người mới đang xây tệp → phản tác dụng.</p>
+  </div>
+  <div class="card ok">
+    <h4><span class="badge green">Đúng (giới hạn Lv1–4)</span></h4>
+    <p><strong>Giả định:</strong> "Có thể tách thợ cao cấp rõ ràng"</p>
+    <p><strong>Data nói:</strong> Thang số Lv1–4 rõ rệt. Các nhánh A/B/C/D/E phân mảnh, di sản, bỏ qua được.</p>
+  </div>
+</div>
+
+<h3>Phân tầng bậc thợ thực tế</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Bậc</th>
+      <th class="center">Số stylist active</th>
+      <th class="center">% lực lượng</th>
+      <th class="center">DT cắt+UND (2 tháng)</th>
+      <th class="center">DT cắt+UND /tháng</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Level 1 (junior)</td><td class="num">385</td><td class="num">58%</td><td class="num">14,36 tỷ</td><td class="num">7,18 tỷ</td></tr>
+    <tr><td>Level 2 (mid)</td><td class="num">183</td><td class="num">27%</td><td class="num">8,51 tỷ</td><td class="num">4,26 tỷ</td></tr>
+    <tr class="good"><td>Level 3 (senior)</td><td class="num">67</td><td class="num">10%</td><td class="num">3,41 tỷ</td><td class="num">1,71 tỷ</td></tr>
+    <tr class="good"><td>Level 4 (top)</td><td class="num">7</td><td class="num">1%</td><td class="num">0,51 tỷ</td><td class="num">0,25 tỷ</td></tr>
+    <tr style="font-weight:600;background:#eef5ff"><td>Tổng Lv3+4 (bảo thủ)</td><td class="num">74</td><td class="num">11%</td><td class="num">3,92 tỷ</td><td class="num">1,96 tỷ</td></tr>
+    <tr style="font-weight:600;background:#eef5ff"><td>Tổng Lv2+3+4 (mở rộng)</td><td class="num">257</td><td class="num">38%</td><td class="num">12,43 tỷ</td><td class="num">6,22 tỷ</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ IDEA 1 ============ -->
+<h2>💡 Ý tưởng 1 — Phụ phí % theo bậc thợ</h2>
+<p><strong>Cơ chế:</strong> Thợ ở bậc cao tự động phục vụ với mức +N% giá cắt+UND. Phí gia tăng = 100% biên. <strong>Chia 50/50</strong> với stylist (động lực thăng cấp + giữ chân thợ giỏi).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Phương án</th>
+      <th class="center">% phí</th>
+      <th class="center">Tập thợ</th>
+      <th class="center">DT phí gross /tháng</th>
+      <th class="center">LN cty (50%) /tháng</th>
+      <th class="center">LN /năm</th>
+      <th class="center">Tăng thu nhập/thợ/tháng</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1A</td><td class="center">5%</td><td class="center">Lv3+4 (74)</td><td class="num">98,0 tr</td><td class="num">49,0 tr</td><td class="num">588 tr</td><td class="num">~662k</td></tr>
+    <tr class="good"><td><strong>1B</strong></td><td class="center">8%</td><td class="center">Lv3+4 (74)</td><td class="num">156,9 tr</td><td class="num"><strong>78,4 tr</strong></td><td class="num"><strong>941 tr</strong></td><td class="num">~1.060k</td></tr>
+    <tr class="bad"><td>1C</td><td class="center">5%</td><td class="center">Lv2+3+4 (257)</td><td class="num">311 tr</td><td class="num">155,4 tr</td><td class="num">1,87 tỷ</td><td class="num">~605k</td></tr>
+    <tr class="bad"><td>1D</td><td class="center">8%</td><td class="center">Lv2+3+4 (257)</td><td class="num">497 tr</td><td class="num">248,7 tr</td><td class="num">2,98 tỷ</td><td class="num">~968k</td></tr>
+  </tbody>
+</table>
+
+<div class="grid">
+  <div class="card ok">
+    <h4>Ưu điểm</h4>
+    <ul class="pros-cons">
+      <li>Tự động, không phụ thuộc khách có book hay không</li>
+      <li>Chia 50% cho thợ → động lực thăng bậc rõ</li>
+      <li>Phí % theo giá → công bằng cảm tính</li>
+      <li>Truyền thông dễ: "thợ giỏi → giá cao"</li>
+    </ul>
+  </div>
+  <div class="card warn">
+    <h4>Nhược điểm / Rủi ro</h4>
+    <ul class="pros-cons">
+      <li><strong>Cannibalization Lv1</strong> nếu áp Lv2+3+4 (38% lực lượng) — khách xin chuyển Lv1 cho rẻ</li>
+      <li>Phí 8% trên UND (bill 200k+) — có thể giảm tỉ lệ mua UND</li>
+      <li>Giá niêm yết phức tạp — lễ tân/khách dễ phàn nàn</li>
+      <li>Phụ thuộc taxonomy Lv1–4 ổn định (HR đổi → phụ phí lao đao)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ IDEA 2 ============ -->
+<h2>💡 Ý tưởng 2 — Phụ phí 30k book + tăng thưởng 10k → 15k</h2>
+<p><strong>Cơ chế:</strong> Khách book thợ trả thêm 30k. Thưởng stylist nhận booking nâng từ ~10k lên 15k (skinner giữ 5k).</p>
+
+<h3>Số liệu nền (ground truth)</h3>
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="label">Lượt book stylist /tháng</div>
+    <div class="val">18.035</div>
+    <div class="sub">36.070 / 2 tháng</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Số stylist nhận thưởng</div>
+    <div class="val">579</div>
+    <div class="sub">TB 34,2 lượt/stylist/tháng</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Chi phí thưởng book hiện</div>
+    <div class="val">175 tr</div>
+    <div class="sub">/tháng (TB tip 333k/stylist)</div>
+  </div>
+  <div class="kpi">
+    <div class="label">Lượt book skinner /tháng</div>
+    <div class="val">4.308</div>
+    <div class="sub">Giữ nguyên 5k/lượt</div>
+  </div>
+</div>
+
+<h3>Phương án 2A — Không ngưỡng (mô hình LN ròng theo tỷ lệ downgrade)</h3>
+<p style="font-size:13px;color:var(--text-muted)"><em>Công thức: ΔLN/tháng = 18.035 × [25.000 × (1−c) + 10.000 × c]. Với c = % khách bỏ book chuyển walk-in (vẫn đến salon).</em></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Kịch bản downgrade (c)</th>
+      <th class="center">ΔLN /tháng</th>
+      <th class="center">ΔLN /năm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>c = 0% (không ai bỏ book)</td><td class="num pos">+450,9 tr</td><td class="num pos">+5,41 tỷ</td></tr>
+    <tr class="highlight"><td><strong>c = 10% (kịch bản trung tâm)</strong></td><td class="num pos"><strong>+423,8 tr</strong></td><td class="num pos"><strong>+5,09 tỷ</strong></td></tr>
+    <tr><td>c = 20%</td><td class="num pos">+396,8 tr</td><td class="num pos">+4,76 tỷ</td></tr>
+    <tr><td>c = 30%</td><td class="num pos">+369,7 tr</td><td class="num pos">+4,44 tỷ</td></tr>
+    <tr><td>c = 50%</td><td class="num pos">+315,6 tr</td><td class="num pos">+3,79 tỷ</td></tr>
+    <tr><td>c = 100% (cực đoan)</td><td class="num pos">+180,3 tr</td><td class="num pos">+2,16 tỷ</td></tr>
+  </tbody>
+</table>
+
+<div class="card ok" style="margin: 8px 0 18px">
+  <h4>⚡ Đặc tính then chốt: ΔLN luôn dương kể cả ở c=100%</h4>
+  <p>Vì tiết kiệm 10k tip cũ khi khách không book + lãi 25k khi giữ được booking. <strong>Phương án gần như bất khả thua P&amp;L</strong> miễn khách không rời salon hoàn toàn (chỉ "downgrade" sang walk-in).</p>
+</div>
+
+<h3>Phương án 2B — 2A + ngưỡng X=10 lượt/tháng (KHÔNG khuyến nghị)</h3>
+<p>Tiết kiệm biên: <strong>+10–11 tr/tháng</strong> (~+120 tr/năm) — chỉ <strong>2,5%</strong> upside 2A. Cái giá phải trả: <strong>62% stylist (360/579) mất hoàn toàn thưởng book</strong>, phần lớn là người mới đang xây tệp. Cộng thêm hiệu ứng vực thẳm (NV 9 lượt mất hết, NV 10 lượt đủ) → gaming, bức xúc.</p>
+
+<table style="margin-top:8px">
+  <thead>
+    <tr>
+      <th>Ngưỡng X</th>
+      <th class="center">Stylist &lt;X</th>
+      <th class="center">% bị cắt thưởng</th>
+      <th class="center">Lượt mất /2 tháng</th>
+      <th class="center">Tiết kiệm /2 tháng</th>
+      <th class="center">% tiết kiệm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>X = 5</td><td class="num">204</td><td class="num">35,2%</td><td class="num">443</td><td class="num">4,12 tr</td><td class="num">1,18%</td></tr>
+    <tr class="bad"><td>X = 10</td><td class="num">360</td><td class="num">62,2%</td><td class="num">1.492</td><td class="num">13,88 tr</td><td class="num">3,96%</td></tr>
+    <tr class="bad"><td>X = 15</td><td class="num">458</td><td class="num">79,1%</td><td class="num">2.655</td><td class="num">25,14 tr</td><td class="num">7,18%</td></tr>
+    <tr class="bad"><td>X = 20</td><td class="num">533</td><td class="num">92,1%</td><td class="num">3.928</td><td class="num">36,99 tr</td><td class="num">10,56%</td></tr>
+  </tbody>
+</table>
+
+<div class="grid">
+  <div class="card ok">
+    <h4>Ưu điểm Idea 2</h4>
+    <ul class="pros-cons">
+      <li><strong>Quy mô vượt trội</strong> — 5,4 tỷ/năm vs &lt;3 tỷ của Idea 1</li>
+      <li><strong>P&amp;L gần như bất khả thua</strong> — kể cả downgrade ồ ạt</li>
+      <li>Tận dụng cơ chế thưởng đã có (`CCM20250625_TipKhachBookOnl`) — chỉ update giá</li>
+      <li>Tăng thưởng → động lực giữ tệp khách book (AOV +13%)</li>
+      <li>Không phá vỡ niêm yết giá DV cốt lõi</li>
+    </ul>
+  </div>
+  <div class="card warn">
+    <h4>Nhược điểm / Rủi ro</h4>
+    <ul class="pros-cons">
+      <li><strong>Cảm nhận thương hiệu</strong> — "trả tiền để được thợ quen" tiêu cực hơn "thợ giỏi giá cao"</li>
+      <li>Mâu thuẫn tín hiệu: vừa thưởng thợ vì khách book, vừa thu phí khách book</li>
+      <li>Downgrade làm méo lịch tự động hóa, salon cục bộ đông</li>
+      <li>Cần IT khóa phí tại app/web khi book (không thay đổi sau)</li>
+    </ul>
+  </div>
+</div>
+
+<h3>💎 Biến thể bổ sung: 2A′ — Phí book phân tầng theo bậc thợ</h3>
+<div class="card note">
+  <p>Thay phí 30k đồng giá bằng:</p>
+  <ul class="pros-cons">
+    <li>Book stylist <strong>Lv1</strong>: 20k</li>
+    <li>Book stylist <strong>Lv2</strong>: 30k</li>
+    <li>Book stylist <strong>Lv3+4</strong>: 40k</li>
+  </ul>
+  <p><em>Logic: giá trị "thợ quen" + "thợ giỏi" cộng dồn. Ước tính upside +15–20% so với 2A. Đánh giá sau khi A/B test 2A xong.</em></p>
+</div>
+
+<!-- ============ SO SÁNH ============ -->
+<h2>⚖️ So sánh tổng hợp 4 phương án (trọng số)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th class="center">1B (8% × Lv3+4)</th>
+      <th class="center">1D (8% × Lv2+3+4)</th>
+      <th class="center highlight">2A (30k + 15k)</th>
+      <th class="center">2B (2A + X=10)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>LN ròng/năm (c=10%)</td><td class="num">~940 tr</td><td class="num">~2,98 tỷ</td><td class="num pos highlight"><strong>~5,09 tỷ</strong></td><td class="num">~5,2 tỷ</td></tr>
+    <tr><td>Rủi ro P&amp;L</td><td class="center">Thấp</td><td class="center">TB</td><td class="center highlight"><strong>Rất thấp</strong></td><td class="center">Rất thấp</td></tr>
+    <tr><td>Rủi ro cannibalize khách</td><td class="center">Thấp</td><td class="center neg">Cao</td><td class="center highlight">TB (downgrade)</td><td class="center">TB</td></tr>
+    <tr><td>Rủi ro động lực thợ</td><td class="center">Thấp</td><td class="center">Thấp</td><td class="center highlight">Thấp (tăng 50%)</td><td class="center neg">Cao (62% mất thưởng)</td></tr>
+    <tr><td>Phức tạp vận hành</td><td class="center">TB</td><td class="center neg">Cao</td><td class="center highlight"><strong>Thấp</strong></td><td class="center">TB</td></tr>
+    <tr><td>Truyền thông dễ</td><td class="center">Tốt</td><td class="center">Khó</td><td class="center highlight">TB (cần định vị)</td><td class="center">Khó</td></tr>
+    <tr><td>Phụ thuộc taxonomy bậc</td><td class="center neg">Cao</td><td class="center neg">Cao</td><td class="center highlight">Thấp</td><td class="center">Thấp</td></tr>
+    <tr style="font-weight:700;background:#eef5ff">
+      <td>Đánh giá</td>
+      <td class="center">OK bổ sung</td>
+      <td class="center neg">KHÔNG</td>
+      <td class="center highlight"><span class="star">⭐⭐⭐ Ưu tiên 1</span></td>
+      <td class="center neg">KHÔNG</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============ LỘ TRÌNH ============ -->
+<h2>🗺️ Khuyến nghị & lộ trình triển khai</h2>
+
+<ol class="roadmap">
+  <li>
+    <strong>A/B test Phương án 2A — 4 đến 8 tuần</strong><br>
+    Chọn 4–6 salon chia 2 nhóm test/control theo vùng & cụm doanh thu tương đương.
+    Cài phí "Đặt thợ chỉ định 30k" trên app/web. Tăng thưởng book stylist 10k → 15k toàn bộ salon test.<br>
+    <strong>Truyền thông:</strong> "30Shine ra mắt dịch vụ Đặt thợ chỉ định — đảm bảo bạn được phục vụ bởi stylist quen / yêu thích".<br>
+    <strong>KPI:</strong> tỷ lệ chấp nhận phí · tổng lượt book/salon-tháng · AOV nhóm book · tần suất quay lại 4 tuần · NPS · feedback NV.<br>
+    <strong>Go/No-go:</strong> lượt book giữ ≥85% baseline · NPS không giảm &gt;3 điểm · ý kiến NV trung tính/tích cực.
+  </li>
+  <li>
+    <strong>Bổ sung Phương án 1B (8% × Lv3+4) — sau khi 2A ổn định 2 tháng</strong><br>
+    Bắt đầu với Lv3+4 (74 NV, dễ kiểm soát truyền thông).
+    <strong>Định vị:</strong> "Stylist Cao Cấp 30Shine — bậc III/IV, kinh nghiệm &amp; chuyên môn hàng đầu, phí dịch vụ +8%".
+  </li>
+  <li>
+    <strong>Tinh chỉnh — Q3/2026</strong><br>
+    Đánh giá phương án 2A′ (phí book phân tầng theo Lv). Cân nhắc gói "VIP Member" gộp 2A + 1B cho khách trung thành cực cao.
+  </li>
+</ol>
+
+<h3>❌ KHÔNG triển khai</h3>
+<div class="grid">
+  <div class="card warn">
+    <h4>1C / 1D ngay từ đầu</h4>
+    <p>Rủi ro cannibalize Lv1 quá lớn khi áp 38% lực lượng. Phải A/B test trên Lv3+4 (74 NV) trước.</p>
+  </div>
+  <div class="card warn">
+    <h4>2B (ngưỡng X cứng)</h4>
+    <p>Lợi ích biên +120 tr/năm = 2,5% upside không tương xứng rủi ro động lực (62% stylist mất thưởng) + gaming.</p>
+  </div>
+  <div class="card warn">
+    <h4>Đồng thời 1D + 2A</h4>
+    <p>Phụ phí tích lũy 8% + ~11% = ~19% trên bill — vượt ngưỡng cảm nhận an toàn của khách.</p>
+  </div>
+</div>
+
+<!-- ============ PHỤ LỤC ============ -->
+<h2>📎 Phụ lục — Giả định & độ tin cậy</h2>
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Giả định / Cảnh báo</th>
+      <th class="center">Ảnh hưởng</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>G1</td><td>Phí 30k & tăng thưởng tính trên 18.035 lượt/tháng (TB Mar+Apr 2026) — có thể thay đổi theo mùa</td>
+      <td class="center">TB</td><td>Kiểm tra lại trên 6 tháng để có yếu tố mùa</td>
+    </tr>
+    <tr>
+      <td>G2</td><td>Co giãn giá thực khi áp phí chưa đo được</td>
+      <td class="center neg">Cao</td><td><strong>Bắt buộc A/B test</strong> trước nhân rộng</td>
+    </tr>
+    <tr>
+      <td>G3</td><td>Định nghĩa "thợ cao cấp" Lv3+4 ổn định</td>
+      <td class="center">TB</td><td>Phối hợp HR khi áp 1B</td>
+    </tr>
+    <tr>
+      <td>G4</td><td>Tip book hiện trung bình 8.787đ (max 10k); báo cáo dùng nominal 10k→15k</td>
+      <td class="center">Thấp</td><td>Không ảnh hưởng chiều khuyến nghị</td>
+    </tr>
+    <tr>
+      <td>G5</td><td>Số bills trong sl_bill ~155–178k/tháng — cần xác nhận tính đầy đủ vs báo cáo doanh thu chính thức</td>
+      <td class="center">TB</td><td>Đối chiếu với phòng IT-BI</td>
+    </tr>
+    <tr>
+      <td>G6</td><td>LTV khách book ước 4,3 tr/khách/năm dựa AOV × tần suất — chưa mô hình hóa churn dài hạn</td>
+      <td class="center neg">Cao</td><td>Kiểm chứng qua A/B test</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer-note">
+  <strong>Nguồn dữ liệu:</strong> Toàn bộ số liệu trong báo cáo này được chạy thật trên SQL Server <code>sqlserver-30shine</code> trong kỳ 16/02–16/05/2026. Bảng chính: <code>Temp_30ShineBI.dbo.sl_bill</code> (17,2M dòng, 2020–16/05/2026) · <code>sl_bill_revenue_summary</code> · <code>bi_salary_nsm_gam_CocheDHL</code> · <code>CCM20250625_TipKhachBookOnl</code> · <code>Solution_30shine.masked.view_BillServiceHis</code> · <code>Tbl_SkillLevel</code>.
+  Báo cáo chi tiết Markdown kèm SQL: <a href="bao-cao-CEO-phu-phi-tho-cao-cap-va-book-tho.md">bao-cao-CEO-phu-phi-tho-cao-cap-va-book-tho.md</a>
+</div>
+
+</div>
+</body>
+</html>
